@@ -1,0 +1,18 @@
+{
+  // Cloudflare Workers static-assets config.
+  //
+  // Cloudflare folded Pages into Workers during 2026; new projects deploy as a
+  // Worker that serves a directory of static assets rather than as a Pages
+  // project. There is no Worker script here at all — `assets.directory` alone
+  // is enough for a purely static site, and Cloudflare serves it directly from
+  // its edge without invoking any compute.
+  //
+  // Site files live in `public/` rather than the repo root so that README.md
+  // and this config are not themselves served as pages.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "lucernarium-org",
+  "compatibility_date": "2026-07-18",
+  "assets": {
+    "directory": "./public"
+  }
+}

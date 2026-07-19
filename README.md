@@ -13,17 +13,35 @@ Apple verifies the site against the **legal entity** on the D-U-N-S record, whic
 ## Structure
 
 ```
-index.html              company overview
-child-safety/index.html CSAE standards (Google Child Safety Standards policy)
-styles.css              shared styles, light + dark
+wrangler.jsonc                 Workers static-assets config
+public/index.html              company overview
+public/child-safety/index.html CSAE standards (Google Child Safety Standards policy)
+public/styles.css              shared styles, light + dark
 ```
 
-No framework, no bundler, no dependencies. Cloudflare Pages serves the directory as-is.
+No framework, no bundler, no dependencies, no build step. Paths are **relative**,
+not root-absolute, so the pages also render correctly opened straight from disk
+(`file://`) — under `file://` a leading `/` resolves to the filesystem root and
+the stylesheet silently fails to load.
 
 ## Deploying
 
-Cloudflare Pages, connected to this repo. Build command: none. Output directory: `/`.
-DNS already lives on Cloudflare, so the custom domain and TLS are configured in the Pages project.
+**Cloudflare Workers with static assets**, not Pages. Cloudflare folded Pages into
+Workers during 2026; new projects deploy as a Worker serving a directory of
+assets. There is no Worker script — `assets.directory` in `wrangler.jsonc` is
+sufficient for a purely static site.
+
+Site files live in `public/` precisely so this config and `README.md` are not
+themselves served as pages.
+
+Two ways to deploy:
+
+- **Dashboard** — Workers → *Import a repository* → select this repo. No build
+  command; `wrangler.jsonc` supplies the rest.
+- **CLI** — `npx wrangler deploy` (after `npx wrangler login`).
+
+DNS already lives on Cloudflare, so the custom domain and TLS are attached from
+the Worker's **Domains** tab.
 
 ## Maintaining the child safety page
 
