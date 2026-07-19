@@ -16,7 +16,8 @@ Apple verifies the site against the **legal entity** on the D-U-N-S record, whic
 wrangler.jsonc                 Workers static-assets config
 public/index.html              company overview
 public/child-safety/index.html CSAE standards (Google Child Safety Standards policy)
-public/styles.css              shared styles, light + dark
+public/styles.css              shared styles (dark only, mirrors the Vespers apex)
+public/email.js                runtime email assembly (anti-harvest)
 ```
 
 No framework, no bundler, no dependencies, no build step. Paths are **relative**,
@@ -55,21 +56,71 @@ Bump the "Last updated" date on any substantive change.
 
 ## Styling
 
-`styles.css` mirrors the design tokens from the Vespers app
-(`frontend/src/styles/tokens.css`) so this site reads as part of the same family
-— same system font stack, same palette, same spacing and radius scales, same
-40rem measure. **Token names are kept identical on purpose**: if the app's
-palette moves, the diff to apply here is obvious.
+`styles.css` mirrors the **Vespers marketing one-pager** served at the
+`vespers.community` apex — the same palette, the same serif display face, the
+same radial wash, the same card treatment. Custom-property names and values are
+copied verbatim from that page's inline `<style>` block, which lives in the
+Vespers repo at **`Caddyfile.tmpl`** (inside the apex `respond` body). That file
+is the source of truth; this one follows. There is no shared build step between
+the two repos, so **nothing will warn you if they drift** — if the palette moves
+there, move it here.
 
-Two deliberate differences:
+> An earlier version of this stylesheet mirrored the *application's* token set
+> (`frontend/src/styles/tokens.css`, `--color-accent:#2563eb`, light + dark)
+> instead. That is a different palette for a different surface — the in-app UI,
+> not the public marketing face — and the result did not look like the site it
+> was meant to match. Match the apex, not the app.
 
-- The app resolves dark mode via `[data-theme="dark"]`, set by its ThemeProvider.
-  This site has no JS, so it follows `prefers-color-scheme` — which is what an
-  app user on the default "system" theme sees anyway.
-- **No logo.** The Vespers marks live in `frontend/src/assets/logo-concepts/` and
-  are concepts pending a branding pass; they are also the *product's* identity,
-  not the *company's*. Copying one here would create a second copy to drift.
+Deliberate differences from the apex:
 
-Verified in a real browser at 900px light, 900px dark, and 390px mobile
-(no horizontal overflow) — CSS correctness is not something a unit test can
-establish.
+- **Dark only**, like the apex (`color-scheme: dark`) — no light variant.
+- **Narrower measure** (46rem vs the apex's 62rem). The apex is 62rem to fit a
+  three-across card grid; these pages are long prose, and 62rem of running text
+  is well past a comfortable line length.
+- **No logo.** The Vespers marks are the *product's* identity, not the
+  *company's*, and the rose-window PNG on the apex is a ~160KB inline data URI.
+  A branding pass is pending.
+
+## Email addresses
+
+No address appears in the served HTML. `email.js` assembles each one at runtime
+from `data-user` / `data-domain` halves, with the `@` produced by
+`String.fromCharCode(64)` so the literal character is absent from source too.
+This is the same technique the Vespers apex uses, generalised from its single
+hard-coded address to the several published here.
+
+The markup contract per address:
+
+```html
+<a class="js-email" data-user="hello" data-domain="lucernarium.org"></a>
+<noscript>hello (at) lucernarium (dot) org</noscript>
+```
+
+The `<noscript>` is the no-JS fallback and is **required** — without it a
+visitor with JavaScript disabled sees nothing at all where an address should
+be. That matters most on the child-safety page, whose address someone may need
+in an urgent moment.
+
+This is spam mitigation, not security: anything running a headless browser gets
+the address, which is fine. The goal is only to stay off the cheap harvest
+lists.
+
+**When adding an address, add the `<noscript>` in the same edit.** The
+verification script below fails the build if a literal address or a `mailto:`
+reappears in source.
+
+## Verifying
+
+CSS correctness, `file://` behaviour, and runtime email assembly are none of
+them things a unit test can establish. A Playwright script exercises the real
+thing across both pages:
+
+- computed `body` background is the apex `--bg`, and `h1` resolves to the serif
+  stack (catches a stylesheet that silently failed to load)
+- zero failed requests under **both** `file://` and `http://` — a root-absolute
+  path regression is invisible over HTTP and fatal from disk
+- every `a.js-email` ends up with a valid address and a matching `mailto:` href
+- neither source file contains a literal address or a `mailto:`
+- with **JavaScript disabled**, the `(at)` / `(dot)` fallbacks are readable
+
+Last verified at 1200px and 390px (no horizontal overflow).

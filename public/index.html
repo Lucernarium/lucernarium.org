@@ -78,7 +78,13 @@
           details.
         </p>
 
-        <a class="cta" href="https://vespers.community">Sign in to Vespers</a>
+        <!--
+          app.vespers.community, NOT the vespers.community apex. The apex
+          serves the Vespers marketing one-pager, which has no sign-in on it;
+          a visitor following this button would land on another brochure. The
+          apex returns 200 for that URL, so no link checker will ever flag it.
+        -->
+        <a class="cta" href="https://app.vespers.community">Sign in to Vespers</a>
 
         <div class="card card--emphasis">
           <h3>Child safety</h3>
@@ -91,34 +97,54 @@
 
         <h2>Contact</h2>
 
+        <!--
+          Addresses are assembled at runtime by email.js so no harvestable
+          string is served in the HTML — the same technique the Vespers apex
+          one-pager uses. Each anchor ships empty with its halves in data
+          attributes; the <noscript> beside it is what a visitor without
+          JavaScript reads. See email.js for the full rationale.
+        -->
         <ul class="contact-list">
           <li>
             <span class="label">General &amp; business enquiries</span>
-            <a href="mailto:hello@lucernarium.org">hello@lucernarium.org</a>
+            <a class="js-email" data-user="hello" data-domain="lucernarium.org"></a>
+            <noscript>hello (at) lucernarium (dot) org</noscript>
           </li>
           <li>
             <span class="label">Vespers support</span>
-            <a href="mailto:support@vespers.community">support@vespers.community</a>
+            <a class="js-email" data-user="support" data-domain="vespers.community"></a>
+            <noscript>support (at) vespers (dot) community</noscript>
           </li>
           <li>
             <span class="label">Privacy</span>
-            <a href="mailto:privacy@vespers.community">privacy@vespers.community</a>
+            <a class="js-email" data-user="privacy" data-domain="vespers.community"></a>
+            <noscript>privacy (at) vespers (dot) community</noscript>
           </li>
           <li>
             <span class="label">Child safety concerns</span>
-            <a href="mailto:security@lucernarium.org">security@lucernarium.org</a>
+            <a class="js-email" data-user="security" data-domain="lucernarium.org"></a>
+            <noscript>security (at) lucernarium (dot) org</noscript>
           </li>
         </ul>
       </main>
 
       <footer class="site-footer">
+        <!--
+          Both legal links point at app.vespers.community, where the documents
+          are actually served. The apex only special-cases /privacy (it 302s
+          there); /terms on the apex falls through to the marketing one-pager
+          and returns 200 with the wrong page — a broken link that looks
+          healthy to any checker that only reads status codes.
+        -->
         <nav aria-label="Footer">
           <a href="child-safety/index.html">Child safety standards</a>
-          <a href="https://vespers.community/privacy">Vespers privacy policy</a>
-          <a href="https://vespers.community/terms">Vespers terms</a>
+          <a href="https://app.vespers.community/privacy">Vespers privacy policy</a>
+          <a href="https://app.vespers.community/terms">Vespers terms</a>
         </nav>
         <p>&copy; 2026 Lucernarium LLC. All rights reserved.</p>
       </footer>
     </div>
+
+    <script src="email.js"></script>
   </body>
 </html>

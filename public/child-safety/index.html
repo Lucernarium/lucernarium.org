@@ -118,11 +118,18 @@
 
         <p>To report a concern to us directly:</p>
 
+        <!--
+          Assembled at runtime by email.js; the <noscript> is the no-JS
+          fallback. See email.js for why. Note this is the one address on the
+          site a person may need in an urgent moment — the fallback text is
+          therefore plainly readable, not a puzzle.
+        -->
         <ul class="contact-list">
           <li>
             <span class="label">Child safety contact &mdash; Lucernarium LLC</span>
             Michael Stack, Founder<br />
-            <a href="mailto:security@lucernarium.org">security@lucernarium.org</a>
+            <a class="js-email" data-user="security" data-domain="lucernarium.org"></a>
+            <noscript>security (at) lucernarium (dot) org</noscript>
           </li>
         </ul>
 
@@ -178,13 +185,16 @@
       </main>
 
       <footer class="site-footer">
+        <!-- app.vespers.community, not the apex — see the note in index.html. -->
         <nav aria-label="Footer">
           <a href="../index.html">Lucernarium</a>
-          <a href="https://vespers.community/privacy">Vespers privacy policy</a>
-          <a href="https://vespers.community/terms">Vespers terms</a>
+          <a href="https://app.vespers.community/privacy">Vespers privacy policy</a>
+          <a href="https://app.vespers.community/terms">Vespers terms</a>
         </nav>
         <p>&copy; 2026 Lucernarium LLC. All rights reserved.</p>
       </footer>
     </div>
+
+    <script src="../email.js"></script>
   </body>
 </html>
