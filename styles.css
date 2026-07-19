@@ -1,0 +1,202 @@
+/* Copyright 2026 Lucernarium, LLC. All rights reserved. */
+
+:root {
+  color-scheme: light dark;
+
+  --bg: #fbfaf8;
+  --bg-raised: #ffffff;
+  --text: #1c1a17;
+  --text-muted: #5c574f;
+  --rule: #e5e0d8;
+  --accent: #7a5c2e;
+  --accent-text: #ffffff;
+  --focus: #7a5c2e;
+
+  --measure: 34rem;
+  --space: 1.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #161513;
+    --bg-raised: #1e1c19;
+    --text: #ece8e1;
+    --text-muted: #a8a196;
+    --rule: #2e2b26;
+    --accent: #d4b483;
+    --accent-text: #1c1a17;
+    --focus: #d4b483;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: ui-serif, Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  text-rendering: optimizeLegibility;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  padding: 0.75rem 1rem;
+  background: var(--accent);
+  color: var(--accent-text);
+  z-index: 10;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
+.wrap {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: clamp(2rem, 6vw, 4.5rem) 1.25rem 4rem;
+}
+
+header.masthead {
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 1.75rem;
+  margin-bottom: 2.5rem;
+}
+
+.wordmark {
+  font-size: clamp(1.75rem, 5vw, 2.25rem);
+  letter-spacing: 0.01em;
+  margin: 0 0 0.35rem;
+  font-weight: 600;
+}
+
+.wordmark a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.entity {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  letter-spacing: 0.02em;
+}
+
+h1 {
+  font-size: clamp(1.5rem, 4.5vw, 1.9rem);
+  line-height: 1.25;
+  margin: 0 0 1rem;
+  font-weight: 600;
+}
+
+h2 {
+  font-size: 1.2rem;
+  margin: 2.75rem 0 0.75rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+h3 {
+  font-size: 1.0625rem;
+  margin: 1.75rem 0 0.5rem;
+  font-weight: 600;
+}
+
+p {
+  margin: 0 0 1.1rem;
+}
+
+.lede {
+  font-size: 1.1875rem;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+ul {
+  padding-left: 1.15rem;
+  margin: 0 0 1.1rem;
+}
+
+li {
+  margin-bottom: 0.55rem;
+}
+
+a {
+  color: var(--accent);
+  text-underline-offset: 0.15em;
+}
+
+a:focus-visible,
+.skip-link:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.card {
+  background: var(--bg-raised);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 1.25rem 1.35rem;
+  margin: 1.75rem 0;
+}
+
+.card p:last-child,
+.card ul:last-child {
+  margin-bottom: 0;
+}
+
+.contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 0.9688rem;
+}
+
+.contact-list li {
+  margin-bottom: 0.6rem;
+}
+
+.contact-list .label {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+footer.site-footer {
+  border-top: 1px solid var(--rule);
+  margin-top: 3.5rem;
+  padding-top: 1.5rem;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+footer.site-footer nav {
+  margin-bottom: 0.85rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.15rem;
+}
+
+.updated {
+  margin: 0;
+  font-size: 0.8125rem;
+}
