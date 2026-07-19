@@ -35,6 +35,23 @@ DNS already lives on Cloudflare, so the custom domain and TLS are configured in 
 
 Bump the "Last updated" date on any substantive change.
 
-## Branding
+## Styling
 
-Deliberately plain — typography and spacing only, no logo or custom assets. A branding pass is planned separately, so this is built to be restyled rather than to be final.
+`styles.css` mirrors the design tokens from the Vespers app
+(`frontend/src/styles/tokens.css`) so this site reads as part of the same family
+— same system font stack, same palette, same spacing and radius scales, same
+40rem measure. **Token names are kept identical on purpose**: if the app's
+palette moves, the diff to apply here is obvious.
+
+Two deliberate differences:
+
+- The app resolves dark mode via `[data-theme="dark"]`, set by its ThemeProvider.
+  This site has no JS, so it follows `prefers-color-scheme` — which is what an
+  app user on the default "system" theme sees anyway.
+- **No logo.** The Vespers marks live in `frontend/src/assets/logo-concepts/` and
+  are concepts pending a branding pass; they are also the *product's* identity,
+  not the *company's*. Copying one here would create a second copy to drift.
+
+Verified in a real browser at 900px light, 900px dark, and 390px mobile
+(no horizontal overflow) — CSS correctness is not something a unit test can
+establish.
