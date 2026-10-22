@@ -18,6 +18,8 @@ public/index.html              company overview
 public/child-safety/index.html CSAE standards (Google Child Safety Standards policy)
 public/styles.css              shared styles (dark only, mirrors the Vespers apex)
 public/email.js                runtime email assembly (anti-harvest)
+public/lucernarium-wordmark-on-dark.svg   masthead wordmark (copy, see "Logo")
+public/favicon.ico, favicon-16.png, favicon-32.png, apple-touch-icon.png
 ```
 
 No framework, no bundler, no dependencies, no build step. Paths are **relative**,
@@ -77,9 +79,23 @@ Deliberate differences from the apex:
 - **Narrower measure** (46rem vs the apex's 62rem). The apex is 62rem to fit a
   three-across card grid; these pages are long prose, and 62rem of running text
   is well past a comfortable line length.
-- **No logo.** The Vespers marks are the *product's* identity, not the
-  *company's*, and the rose-window PNG on the apex is a ~160KB inline data URI.
-  A branding pass is pending.
+- **The company's logo, not the product's.** The apex leads with the Vespers
+  rose window; these pages lead with the Lucernarium wordmark. The Vespers
+  marks are the *product's* identity, not the *company's*.
+
+## Logo
+
+The masthead wordmark and the favicon set are **copies**. The source of truth
+is the Vespers repo at `docs/brand/lucernarium/` (SVGs, the scripts that
+generate them, colors, font license). The site is dark-only, so it uses the
+ivory `lucernarium-wordmark-on-dark.svg`; its lettering is outlines, so no web
+font is loaded. The 16 and 32 px favicons deliberately use a bolder variant of
+the round mark (the regular one blurs at that size); that README explains why.
+
+Nothing links the copies to the source. If the logo changes there, copy the
+files here again. Keep every path **relative** (`favicon.ico` on the home page,
+`../favicon.ico` on the child-safety page), for the same `file://` reason as the
+stylesheet.
 
 ## Email addresses
 
@@ -123,4 +139,11 @@ thing across both pages:
 - neither source file contains a literal address or a `mailto:`
 - with **JavaScript disabled**, the `(at)` / `(dot)` fallbacks are readable
 
-Last verified at 1200px and 390px (no horizontal overflow).
+- the masthead wordmark image actually decodes, with `alt="Lucernarium"` (a
+  broken `src` still shows the alt text, which looks fine at a glance)
+- every icon link (`favicon.ico`, the two PNGs, `apple-touch-icon.png`) decodes
+  as an image; icon fetches are outside the page's request stream, so the
+  failed-request check alone cannot see a broken one
+
+Last verified 2026-10-21 at 1280px and 390px (no horizontal overflow), after
+the logo was added.
