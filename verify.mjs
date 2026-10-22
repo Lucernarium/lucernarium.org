@@ -34,19 +34,31 @@ const HERE = fileURLToPath(new URL(".", import.meta.url));
 const ROOT = join(HERE, "public");
 const PORT = 8899;
 
+// The package entry point, not a path inside .pnpm/: that one embeds the
+// version, so every Playwright bump in the Vespers frontend broke this script.
 const PW =
   process.env.PLAYWRIGHT_PATH ||
-  "/home/mike/projects/vespers/frontend/node_modules/.pnpm/playwright@1.61.1/node_modules/playwright/index.js";
+  "/home/mike/projects/vespers/frontend/node_modules/@playwright/test/index.mjs";
 
 let pw;
 try {
-  pw = (await import(PW)).default;
+  const mod = await import(PW);
+  pw = mod.chromium ? mod : mod.default;
 } catch {
   console.error(`Could not load Playwright from:\n  ${PW}\nSet PLAYWRIGHT_PATH.`);
   process.exit(2);
 }
 
-const TYPES = { ".html": "text/html", ".css": "text/css", ".js": "text/javascript" };
+// Chromium will not render an SVG <img> served as application/octet-stream,
+// so the image types matter here, not just the text ones.
+const TYPES = {
+  ".html": "text/html",
+  ".css": "text/css",
+  ".js": "text/javascript",
+  ".svg": "image/svg+xml",
+  ".png": "image/png",
+  ".ico": "image/x-icon",
+};
 
 // Serve `public/` so the http:// half of the run is exercised too. A
 // root-absolute path regression is invisible over HTTP and fatal from disk, so
@@ -96,6 +108,38 @@ for (const scheme of ["file", "http"]) {
     check(`[${p.name}] body bg is apex --bg #0a0d16`, bg === "rgb(10, 13, 22)", bg);
     check(`[${p.name}] h1 uses the serif stack`, /Iowan|Palatino|Georgia/.test(h1font), h1font.slice(0, 40));
     check(`[${p.name}] no failed requests`, failed.length === 0, failed.join(","));
+
+    // The masthead wordmark is an image now. A broken src still leaves the alt
+    // text in place, which reads fine in a diff, so check that it decoded.
+    const mark = await page.evaluate(() => {
+      const img = document.querySelector(".masthead .wordmark img");
+      return img
+        ? { alt: img.alt, w: img.naturalWidth, h: Math.round(img.getBoundingClientRect().height) }
+        : null;
+    });
+    check(`[${p.name}] wordmark image decoded`, (mark?.w ?? 0) > 0, JSON.stringify(mark));
+    check(`[${p.name}] wordmark alt is "Lucernarium"`, mark?.alt === "Lucernarium", mark?.alt ?? "");
+
+    // Every icon link must resolve to a real image. Browsers fetch icons
+    // outside the page's request stream, so "no failed requests" cannot see a
+    // broken one; load each into an <img> and require it to decode.
+    const icons = await page.evaluate(() =>
+      Promise.all(
+        [...document.querySelectorAll('link[rel~="icon"], link[rel="apple-touch-icon"]')].map(
+          (l) =>
+            new Promise((resolve) => {
+              const img = new Image();
+              img.onload = () => resolve({ href: l.getAttribute("href"), ok: img.naturalWidth > 0 });
+              img.onerror = () => resolve({ href: l.getAttribute("href"), ok: false });
+              img.src = l.href;
+            }),
+        ),
+      ),
+    );
+    check(`[${p.name}] has 4 icon links`, icons.length === 4, String(icons.length));
+    for (const i of icons) {
+      check(`[${p.name}] icon ${i.href} loads`, i.ok);
+    }
 
     const mails = await page.evaluate(() =>
       [...document.querySelectorAll("a.js-email")].map((a) => ({

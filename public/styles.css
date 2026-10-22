@@ -104,20 +104,27 @@ body {
   border-bottom: 1px solid var(--rule);
 }
 
+/*
+ * The company wordmark, in its ivory on-dark variant (this site is dark-only,
+ * so there is no navy variant to swap to). The SVG is a copy of the one in the
+ * Vespers repo at docs/brand/lucernarium/, which is the source of truth; its
+ * lettering is outlines, so no font is loaded. The width/height attributes in
+ * the HTML reserve the space before it loads; this sets the rendered size.
+ */
 .wordmark {
-  font-family: var(--serif);
-  font-size: 1.3rem;
-  letter-spacing: 0.06em;
-  margin: 0 0 0.15rem;
+  margin: 0 0 0.5rem;
 }
 
 .wordmark a {
-  color: var(--fg);
+  display: inline-block;
   border-bottom: none;
+  line-height: 0;
 }
 
-.wordmark a:hover {
-  color: var(--accent-soft);
+.wordmark img {
+  display: block;
+  height: 2.1rem;
+  width: auto;
 }
 
 .entity {
