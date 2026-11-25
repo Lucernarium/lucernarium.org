@@ -78,7 +78,7 @@ await new Promise((r) => server.listen(PORT, "127.0.0.1", r));
 
 const PAGES = [
   { name: "home", rel: "index.html", emails: 4 },
-  { name: "child-safety", rel: "child-safety/index.html", emails: 1 },
+  { name: "child-safety", rel: "child-safety/index.html", emails: 2 },
 ];
 
 let failures = 0;
